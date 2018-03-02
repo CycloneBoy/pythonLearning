@@ -66,6 +66,7 @@ class MyWindow(QMainWindow):
 
         print("vedio size", self._vedioWidth, self._vedioHeight)
 
+
         # 加载主窗口
         super(MyWindow, self).__init__(*args)
 
@@ -74,6 +75,7 @@ class MyWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.ui.label_ShowImg.resize(self._vedioWidth, self._vedioHeight)
+        self.setWindowIcon(QIcon("./icon.jpg"))
 
         # 显示监控视频
         self.timer = QTimer(self)
