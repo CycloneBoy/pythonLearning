@@ -50,7 +50,7 @@ class MyWindow(QMainWindow):
         self._hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
         self._showSize = 400
         self._vedioWidth = int(self._showSize)
-        self._vedioHeight = int(self._showSize)
+        self._vedioHeight = 300 # int(self._showSize)
         self._isHogDetect = False
         self._isDetectPedestrain = False
         self._locationX = 0
@@ -76,6 +76,9 @@ class MyWindow(QMainWindow):
 
         self.ui.label_ShowImg.resize(self._vedioWidth, self._vedioHeight)
         self.setWindowIcon(QIcon("./icon.jpg"))
+        # 设置窗口固定大小
+        self.setFixedHeight(380)
+        self.setFixedWidth(640)
 
         # 显示监控视频
         self.timer = QTimer(self)
