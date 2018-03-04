@@ -25,15 +25,14 @@ from PyQt5.QtCore import *
 
 from PyQt5.QtWidgets import QFileDialog
 from LearningOpenCV3WithPython.passwordDecipher.mainwindow import Ui_mainWindow
-
+from LearningOpenCV3WithPython.passwordDecipher.simpleSubstitutePassword import SimpleSubstitutePassword
 
 
 class MyWindow(QMainWindow):
     """加载主窗口 """
 
     def __init__(self, *args):
-        self.ec = ECaesarCipher()
-        self.playfair = Playfair()
+        self.simpleSubPwd = SimpleSubstitutePassword()
 
         # 加载主窗口
         super(MyWindow, self).__init__(*args)
@@ -41,220 +40,61 @@ class MyWindow(QMainWindow):
         # loadUi("mainwindow.ui", self)  # 通过uic的loadUi加载UI
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
+        self.setWindowIcon(QIcon("./icon.jpg"))
 
         # 加载信号与槽
         self.ui.pushButtonEncryption.clicked.connect(self.encryption)
         self.ui.pushButtonCracked.clicked.connect(self.decrypt)
-
+        self.ui.pushButtonGeneratePwd.clicked.connect(self.onPushButtonGeneratePwd)
+        self.ui.pushButtonClearHackMessage.clicked.connect(self.onPushButtonClearHackMessage)
+        self.ui.pushButtonClearMessage.clicked.connect(self.onPushButtonClearMessage)
 
     # 加密
     def encryption(self):
         clearText = self.ui.textEditCleartext.toPlainText()
-        self.ec.setMessage(clearText)
+        self.simpleSubPwd.message = clearText
+        self.simpleSubPwd.key = self.ui.lineEditSetPwd.text().strip().upper()
+        print(self.simpleSubPwd.key)
+        # self.simpleSubPwd.checkValidKey(self.simpleSubPwd.key)
+        print("正在加密中,请稍后....")
+        self.ui.groupBox.setTitle("正在加密中,请稍后....")
         print("加密:" + clearText)
-        password = self.ec.encrypt()
+        password = self.simpleSubPwd.encryptMessage(self.simpleSubPwd.key,self.simpleSubPwd.message)
+        self.cipherMessage = password
+
         self.ui.textEditCiphertext.setText(password)
+        self.ui.groupBox.setTitle("加密完成")
+        print("加密完成")
         print("加密后的密文:" + password)
 
     # 解密
     def decrypt(self):
-        password  = self.ui.textEditCiphertext.toPlainText()
-        self.ec.setCipherMessage(password)
-        clearText = self.ec.decrypt()
+        print("正在破解中,请稍后....")
+        self.ui.groupBox.setTitle("正在破解中,请稍后....")
+        password = self.ui.textEditCiphertext.toPlainText()
+
+        self.simpleSubPwd.hackerCipherMessage = password
+        self.simpleSubPwd.decrypt()
+
+        self.ui.groupBox.setTitle("破解完成")
+        print("破解完成")
+        clearText = self.simpleSubPwd.hackedMessage
         print("解密:" + password)
         self.ui.textEditCleartext.setText(clearText)
         print("解密后的明文:" + clearText)
+        self.ui.lineEditGeneratePwd.setText(self.simpleSubPwd.hackedKey)
 
+    # 产生密匙
+    def onPushButtonGeneratePwd(self):
+        self.simpleSubPwd.key = self.simpleSubPwd.getRandomKey()
+        print(self.simpleSubPwd.key)
+        self.ui.lineEditSetPwd.setText(self.simpleSubPwd.key)
 
-#简单代替密码 凯撒密码
-class ECaesarCipher():
-    def __init__(self, message=None):
-        self.message = message
-        self.cipherMessage = ""
+    def onPushButtonClearHackMessage(self):
+        self.ui.textEditCiphertext.clear()
 
-        # 获取“a”到”z“的顺序字符表
-        pT = tuple(string.ascii_lowercase)
-
-        # 建立随机化的密文字符表
-        cT = []
-        temp = list(range(0, 26))
-        random.shuffle(temp)
-        for x in temp:
-            cT.append(pT[x])
-
-        # 建立密码本，即明文、密文对照表，这里使用了字典结构
-        self.keyTable = {}
-        for x, y in zip(pT, cT):
-            self.keyTable[x] = y
-
-    def setMessage(self,message):
-        self.message = message
-
-    def setCipherMessage(self,cipherMessage):
-        self.cipherMessage = cipherMessage
-
-    def encrypt(self):
-        self.cipherMessage = ""
-
-        for x in self.message:
-            if x == ' ':
-                self.cipherMessage += ' '
-            elif x.isupper():
-                self.cipherMessage += self.keyTable[x.lower()].upper()
-            else:
-                self.cipherMessage += self.keyTable[x]
-
-        return self.cipherMessage
-
-    def decrypt(self):
-        keyTableDec = dict(
-            (value, key) for key, value in self.keyTable.items())
-        message = ""
-        if self.cipherMessage:
-            for x in self.cipherMessage:
-                if x == ' ':
-                    message += ' '
-                elif x.isupper():
-                    message += keyTableDec[x.lower()].upper()
-                else:
-                    message += keyTableDec[x]
-
-        return message
-
-class Playfair():
-    '''Playfair算法'''
-
-    def __init__(self, message=None):
-        self.message = message
-        self.cipherMessage = ""
-        # 5*5的矩阵, I与J同, 注意是大写的，也可以自己定义矩阵(不要重复)
-        self. SECRET_LIST = [["M", "O", "N", "A", "R"],
-                             ["C", "H", "Y", "B", "D"],
-                             ["E", "F", "G", "J", "K"],
-                             ["L", "P", "Q", "S", "T"],
-                             ["U", "V", "W", "X", "Z"]]
-
-    def setMessage(self,message):
-        self.message = message
-
-    def setCipherMessage(self,cipherMessage):
-        self.cipherMessage = cipherMessage
-
-
-    # 加密
-    def encryption(self, clear_text):
-        # 去除空格与逗号
-        clear_text = clear_text.replace(" ", "").replace(",", "")
-        list_clear_text = list(clear_text)  # 字符串转化为列表
-        print(list_clear_text)
-        # 两个字母为一组，在重复的明文字母中插入填充字母Z
-        flag = False
-        while not flag:
-            list_clear_text = self.deal_repeat(list_clear_text)[0]
-            flag = self.deal_repeat(list_clear_text)[1]
-        print(list_clear_text)
-        # 若分组到最后一组时只有一个字母，则补充字母Z
-        if len(list_clear_text) % 2 == 1:
-            list_clear_text.append("Z")
-        print(list_clear_text)
-        # 加密的核心代码
-        encryption_list = self.core_encryption(list_clear_text)  # 返回密文列表
-        return ("").join(encryption_list)
-
-    # 处理一组字线是重复明文字母
-    def deal_repeat(self, list_clear_text):
-        count = 0  # 计算列表中有多少组是不同的
-        flag = False
-        for i in range(len(list_clear_text)):
-            if (i % 2 == 1):  # 列表中的第d奇数个
-                if (list_clear_text[i] == list_clear_text[
-                        i - 1]):  # 第奇数个与前一个(偶数)是否相同
-                    list_clear_text.insert(i, "Z")  # 有重复明文字母则插入一个填充字母Z 并且退出循环
-                    break
-                if (list_clear_text[i] != list_clear_text[i - 1]):
-                    count += 1
-                    if count == int(len(list_clear_text) / 2):
-                        flag = True
-
-        return list_clear_text, flag  # 返回的是元组 (list_clear_text, flag)
-
-    # 获得字母在矩阵中的行与列
-    def get_rows_columns(self, alphabet):
-        if alphabet == "I":  # 矩阵中只有25个字母，I同J
-            alphabet = "J"
-        for i in range(len(self.SECRET_LIST)):
-            for j in range(len(self.SECRET_LIST[i])):
-                if (self.SECRET_LIST[i][j] == alphabet):
-                    return i, j
-
-    # 加密的核心代码,先找出每一组字母在5*5矩阵 的行与列
-    def core_encryption(self, list_clear_text):
-        encryption_list = []
-        for i in range(len(list_clear_text)):
-            if (i % 2 == 0):
-                x = list_clear_text[i].upper()  # 将一组字母转为大写，因为矩阵的字母全是大写的
-                y = list_clear_text[i + 1].upper()
-                x_tuple = self.get_rows_columns(x)  # 返回元组形式
-                y_tuple = self.get_rows_columns(y)
-                # print(x_tuple)
-                # print(y_tuple)
-                if x_tuple[0] == y_tuple[0]:  # 若明文字母在矩阵中同行
-                    x_secret = self.SECRET_LIST[x_tuple[0]][(x_tuple[1] + 1) % 5]
-                    y_secret = self.SECRET_LIST[y_tuple[0]][(y_tuple[1] + 1) % 5]
-                elif x_tuple[1] == y_tuple[1]:  # 若明文字母在矩阵中同列
-                    x_secret = self.SECRET_LIST[(x_tuple[0] + 1) % 5][x_tuple[1]]
-                    y_secret = self.SECRET_LIST[(y_tuple[0] + 1) % 5][y_tuple[1]]
-                else:  # 若明文字母在矩阵中不同行不同列
-                    x_secret = self.SECRET_LIST[x_tuple[0]][y_tuple[1]]
-                    y_secret = self.SECRET_LIST[y_tuple[0]][x_tuple[1]]
-                encryption_list.append(x_secret)
-                encryption_list.append(y_secret)
-        return encryption_list  # 返回字母加密后的列表
-
-    # 解密核心代码，返回解密后的明文列表,密文肯定是偶数的，每一组密文字母也肯定是不同的
-    def core_decryption(self, list_cipher_text):
-        decryption_list = []
-        for i in range(len(list_cipher_text)):
-            if (i % 2 == 0):
-                x = list_cipher_text[i]
-                y = list_cipher_text[i + 1]
-                x_tuple = self.get_rows_columns(x)  # 返回元组形式
-                y_tuple = self.get_rows_columns(y)
-                if x_tuple[0] == y_tuple[0]:  # 若密文字母在矩阵中同行
-                    x_clear = self.SECRET_LIST[x_tuple[0]][(x_tuple[1] - 1) % 5]
-                    y_clear = self.SECRET_LIST[y_tuple[0]][(y_tuple[1] - 1) % 5]
-                elif x_tuple[1] == y_tuple[1]:  # 若密文字母在矩阵中同列
-                    x_clear = self.SECRET_LIST[(x_tuple[0] - 1) % 5][x_tuple[1]]
-                    y_clear = self.SECRET_LIST[(y_tuple[0] - 1) % 5][y_tuple[1]]
-                else:  # 若密文字母在矩阵中不同行不同列
-                    x_clear = self.SECRET_LIST[x_tuple[0]][y_tuple[1]]
-                    y_clear = self.SECRET_LIST[y_tuple[0]][x_tuple[1]]
-                decryption_list.append(x_clear)
-                decryption_list.append(y_clear)
-        return decryption_list  # 返回解密后的明文列表(需进一步处理,eg:去掉Z)
-
-    # 解密
-    def decryption(self, cipher_text):
-        cipher_text = cipher_text.replace(" ", "").replace(",", "")
-        list_cipher_text = list(cipher_text.strip())  # 将密文转化为列表
-        decryption_list = self.core_decryption(list_cipher_text)  # 调用函数
-        if decryption_list[-1] == "Z":  # 若列表最后一个元素是Z，则删除
-            decryption_list.pop(-1)
-        # 找出列表应该删除的下标
-        delete_list = []
-        for i in range(len(decryption_list)):
-            if i % 2 == 0:  # 第偶数个
-                # 不越界
-                if i + 2 < len(decryption_list) and \
-                                decryption_list[i] == decryption_list[i + 2] and \
-                                decryption_list[i + 1] == "Z":
-                    delete_list.append(i + 1)
-                    # decryption_list.pop(i+1)
-        delete_list.reverse()  # 反序，从后往前删除，每次删完下标就不会再变化，我真是太聪明了！
-        for i in delete_list:
-            print(i)
-            decryption_list.pop(i)
-        return "".join(decryption_list)
+    def onPushButtonClearMessage(self):
+        self.ui.textEditCleartext.clear()
 
 
 if __name__ == '__main__':
@@ -266,16 +106,3 @@ if __name__ == '__main__':
 
 
 
-    # if __name__ == "__main__":
-    #     while True:
-    #         choice = input("Please input E for encryption or D for decryption：")
-    #         if choice.strip() != "E" and choice.strip() != "D":
-    #             print("Input Error")
-    #         # 加密
-    #         if choice.strip() == "E":
-    #             clear_text = input("请输入明文:")
-    #             print("加密成功！密文:%s" % encryption(clear_text))
-    #         # 解密
-    #         if choice.strip() == "D":
-    #             cipher_text = input("请输入密文(大写字母/偶数):")
-    #             # print("解密成功！明文:%s" % decryption(cipher_text))

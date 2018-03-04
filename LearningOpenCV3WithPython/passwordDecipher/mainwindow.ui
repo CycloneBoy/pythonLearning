@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>698</width>
-    <height>513</height>
+    <width>844</width>
+    <height>619</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>691</width>
-      <height>461</height>
+      <width>841</width>
+      <height>571</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -33,7 +33,7 @@
      <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>340</x>
+        <x>420</x>
         <y>10</y>
         <width>54</width>
         <height>12</height>
@@ -72,7 +72,7 @@
      <widget class="QPushButton" name="pushButtonEncryption">
       <property name="geometry">
        <rect>
-        <x>350</x>
+        <x>420</x>
         <y>370</y>
         <width>75</width>
         <height>23</height>
@@ -87,19 +87,123 @@
        <rect>
         <x>10</x>
         <y>30</y>
-        <width>320</width>
-        <height>320</height>
+        <width>400</width>
+        <height>330</height>
        </rect>
       </property>
      </widget>
      <widget class="QTextEdit" name="textEditCleartext">
       <property name="geometry">
        <rect>
-        <x>340</x>
+        <x>420</x>
         <y>30</y>
-        <width>320</width>
-        <height>320</height>
+        <width>400</width>
+        <height>330</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QGroupBox" name="groupBoxKey">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>400</y>
+        <width>391</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string/>
+      </property>
+      <widget class="QLabel" name="label_3">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>30</y>
+         <width>71</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>原始的密匙：</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEditSetPwd">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>30</y>
+         <width>191</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>LFWOAYUISVKMNXPBDCRJTQEGHZ</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_4">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>60</y>
+         <width>71</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>破解的密匙：</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEditGeneratePwd">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>60</y>
+         <width>191</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="pushButtonGeneratePwd">
+      <property name="geometry">
+       <rect>
+        <x>290</x>
+        <y>430</y>
+        <width>91</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>产生随机密匙</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButtonClearHackMessage">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>370</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>清空密文</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButtonClearMessage">
+      <property name="geometry">
+       <rect>
+        <x>520</x>
+        <y>370</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>清空明文</string>
       </property>
      </widget>
     </widget>
@@ -115,7 +219,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>698</width>
+     <width>844</width>
      <height>23</height>
     </rect>
    </property>
