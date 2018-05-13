@@ -87,9 +87,9 @@
       <widget class="QLabel" name="label_target_number">
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>100</x>
          <y>340</y>
-         <width>54</width>
+         <width>131</width>
          <height>21</height>
         </rect>
        </property>
@@ -151,6 +151,32 @@
          <width>161</width>
          <height>81</height>
         </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_target_detect_time">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>370</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>xxx</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_11">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>370</y>
+         <width>71</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>单帧检测时间:</string>
        </property>
       </widget>
      </widget>

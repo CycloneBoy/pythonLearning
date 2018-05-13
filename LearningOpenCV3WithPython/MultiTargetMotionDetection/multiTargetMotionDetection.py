@@ -78,9 +78,12 @@ class MyWindow(QMainWindow):
         self._findTargetListOld = []
         self._lineList = []
 
+        self._startDetectTime = 0
+        self._endDetectTime = 0
         self._sameFindTargetNumber = 0
         self._targetquen = deque()
         self._targetNewIndexList = []
+
 
         #输出数据
         self._outputData = []
@@ -162,6 +165,7 @@ class MyWindow(QMainWindow):
     def objectTrackingKNN(self):
         ret, frame = self._camera.read()
         # print(ret, len(frame))
+        self._startDetectTime = time.clock()
 
         # 视频是否播放完毕
         if ret != True:
@@ -202,6 +206,10 @@ class MyWindow(QMainWindow):
                     findResult = FindTarget(int(x + w/2),int(y + h/2),int(abs(w)),int(abs(h)))
                     self._findTargetList.append(findResult)
 
+        self._endDetectTime = time.clock()
+        # print("单帧检测时间: " ,str((self._endDetectTime - self._startDetectTime)/1000)," ms")
+        showDetectTime = "{:.2e} ms".format((self._endDetectTime - self._startDetectTime)/1000)
+        self.ui.label_target_detect_time.setText(showDetectTime)
 
         # 判断是否检测到目标
         if self._findTargetNumber > 0:
@@ -343,6 +351,7 @@ class MyWindow(QMainWindow):
         self.ui.textEditSize.append("x:{}   y:{} ".format(showStr,showStr))
         self.ui.textEditSpeed.append("dx:{} dy:{} ".format(showStr,showStr))
         self.ui.label_target_number.setText("0")
+        self.ui.label_target_detect_time.setText("xxx")
         self._lineList.clear()
         self._sameFindTargetNumber = 0
 

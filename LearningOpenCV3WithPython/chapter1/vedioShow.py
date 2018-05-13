@@ -18,6 +18,8 @@ if __name__ == '__main__':
 
     success,frame = cameraCapture.read()
     while success and cv.waitKey(1) == -1 and not clicked:
+
+
         cv.imshow('MyWindow',frame)
         success,frame = cameraCapture.read()
 

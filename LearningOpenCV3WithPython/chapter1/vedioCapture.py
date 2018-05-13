@@ -1,6 +1,7 @@
 import cv2 as cv
 
 
+
 if __name__ == '__main__':
     cameraCapture = cv.VideoCapture(0)
     fps = 30 #(int)(cameraCapture.get(cv.CAP_PROP_FPS))
