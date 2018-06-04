@@ -27,8 +27,8 @@ class MyWindow(QMainWindow):
     def __init__(self, *args):
         self.video = "data/vtest.avi"
         self.urlVideo = "http://192.168.2.192:8080/?action=stream"
-        # self._camera = cv2.VideoCapture(self.video)  # 参数0表示第一个摄像头
-        self._camera = cv2.VideoCapture(0)  # 参数0表示第一个摄像头
+        self._camera = cv2.VideoCapture(self.video)  # 参数0表示第一个摄像头
+        # self._camera = cv2.VideoCapture(0)  # 参数0表示第一个摄像头
         # self._camera = cv2.VideoCapture(self.urlVideo)
         # 判断视频是否打开
         if (self._camera.isOpened()):
@@ -36,8 +36,8 @@ class MyWindow(QMainWindow):
         else:
             print('摄像头未打开')
 
-        self._vedioWidth = int(self._camera.get(cv2.CAP_PROP_FRAME_WIDTH))
-        self._vedioHeight = int(self._camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        # self._vedioWidth = int(self._camera.get(cv2.CAP_PROP_FRAME_WIDTH))
+        # self._vedioHeight = int(self._camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self._frame1 = None
         self._frame2 = None
         self._grayImage1 = None
@@ -53,7 +53,7 @@ class MyWindow(QMainWindow):
         self._bsknn = cv2.createBackgroundSubtractorKNN(detectShadows=True)
         self._isFindCircle = True
 
-        print("vedio size", self._vedioWidth, self._vedioWidth)
+        # print("vedio size", self._vedioWidth, self._vedioWidth)
 
         # 加载主窗口
         super(MyWindow, self).__init__(*args)
@@ -76,7 +76,7 @@ class MyWindow(QMainWindow):
         # 显示监控视频
         self.timer = QTimer(self)
         self.count = 0
-        self.timer.timeout.connect(self.objectTrackingKNN)
+        # self.timer.timeout.connect(self.objectTrackingKNN)
         self.startCount()
 
         # 加载信号与槽
@@ -85,8 +85,17 @@ class MyWindow(QMainWindow):
         self.ui.pushButtonScreenShot.clicked.connect(self.saveImage)
 
         # 显示图片
+        # self.srcImage = "1.jpg"
+        # self.desImage = "2.jpg"
+
+        self.srcImage = "3.jpg"
+        self.desImage = "4.jpg"
+
         self.image = QImage()
         self.image.load("circle.jpg")
+
+        self.image.load(self.srcImage)
+
         self.ui.label_ShowImg.setPixmap(QPixmap.fromImage(self.image))
         self.ui.label_ShowImg_2.setPixmap(QPixmap.fromImage(self.image))
 
@@ -172,8 +181,11 @@ class MyWindow(QMainWindow):
         if self._isFindCircle == True:
             self._isFindCircle = False
             self.image.load("find.jpg")
+            self.image.load(self.srcImage)
+
         else:
             self.image.load("circle.jpg")
+            self.image.load(self.desImage)
             self._isFindCircle = True
 
         self.ui.label_ShowImg_2.setPixmap(QPixmap.fromImage(self.image))
